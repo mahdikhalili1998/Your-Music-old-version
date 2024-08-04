@@ -11,6 +11,12 @@ const config: Config = {
       fontFamily: {
         shantell: ["Sirin Stencil", "sans-serif"],
       },
+      colors: {
+        "p-200": "#e9d5ff",
+        "p-500": "#a855f7",
+        "p-700": "#7e22ce",
+        "p-950": "#3b0764",
+      },
     },
   },
   plugins: [],
