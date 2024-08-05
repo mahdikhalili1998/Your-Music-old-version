@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         shantell: ["Sirin Stencil", "sans-serif"],
+        Roboto: ["Roboto Slab", "sans-serif"],
       },
       colors: {
         "p-200": "#e9d5ff",

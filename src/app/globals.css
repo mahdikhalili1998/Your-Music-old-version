@@ -49,3 +49,7 @@
   border-top-left-radius: 100%;
   border-top-right-radius: 100%;
 }
+
+.custom-divider {
+  width: 95%;
+}

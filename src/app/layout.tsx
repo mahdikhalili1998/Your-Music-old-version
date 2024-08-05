@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import "../font/font.css";
+import "../font/menu.css";
 import Layout from "@/components/layout/Layout";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -18,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={"font-Roboto"}>
         <Layout>{children}</Layout>
       </body>
     </html>
