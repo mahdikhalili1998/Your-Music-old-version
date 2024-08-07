@@ -1,20 +1,66 @@
 "use client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
+import BtLight from "../module/BtLight";
+import { Flip, toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.min.css";
+import axios from "axios";
 
 function OtpPage() {
   const [phoneNumber, setPhoneNumber] = useState<string>("");
-  const [otp, setOtp] = useState<string>("");
+  const [otpCode, setOtpCode] = useState<string>("");
+  const [userCode, setUserCode] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [nextLevel, setNextLevel] = useState<boolean>(false);
   const router = useRouter();
 
-  const sendNumber = () => {
-    setNextLevel(true);
+  const sendNumber = async () => {
+    const num = `{"to":"${phoneNumber}"}`;
+    const phoneRegex = /^09\d{9}$/;
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    if (!phoneRegex.test(phoneNumber)) {
+      toast.error("Enter the correct phone number", {
+        position: "top-center",
+        transition: Flip,
+      });
+      return;
+    }
+    if (phoneRegex.test(phoneNumber)) {
+      setNextLevel(true);
+    }
+
+    setLoading(true);
+
+    await axios
+      .post("api/proxy", num, { headers })
+      .then((res) => {
+        if (res) {
+          setNextLevel(true);
+          setOtpCode(res?.data.code);
+        }
+      })
+      .catch((error) => {
+        if (error) {
+          toast.error("Server Error , try again", {
+            position: "top-center",
+            transition: Flip,
+          });
+          return;
+        }
+      });
+
+    setLoading(false);
   };
 
   const otpHandler = () => {
-    console.log("hiii");
+    if (otpCode === userCode) {
+      router.push("/sign-up");
+    }
   };
 
   const editHandler = () => {
@@ -26,7 +72,7 @@ function OtpPage() {
       <h2 className="text-center font-medium text-p-950">
         {nextLevel ? "Enter your code :" : "Enter your phone number :"}
       </h2>
-      <div className="mx-auto flex w-max flex-col items-center gap-4 rounded-lg p-3 py-5 shadow-xl shadow-p-200">
+      <div className="mx-auto flex w-max flex-col items-center gap-6 rounded-lg p-3 py-5 shadow-xl shadow-p-200">
         {nextLevel ? (
           <Image
             className=""
@@ -53,9 +99,13 @@ function OtpPage() {
             id="phone"
             name="phone"
             placeholder={nextLevel ? " x x x x" : "0912 345 6789"}
-            value={nextLevel ? otp : phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            className="rounded-lg border-2 border-p-700 px-2 py-1 placeholder:text-center focus:outline-p-700"
+            value={nextLevel ? userCode : phoneNumber}
+            onChange={(e) => {
+              nextLevel
+                ? setUserCode(e.target.value)
+                : setPhoneNumber(e.target.value);
+            }}
+            className="rounded-lg border-2 border-p-700 px-2 py-1 text-center placeholder:text-center focus:outline-p-700"
           />
           {nextLevel ? (
             <div className="flex items-center justify-center gap-4">
@@ -76,13 +126,16 @@ function OtpPage() {
           ) : (
             <button
               onClick={(e) => sendNumber()}
-              className="rounded-lg bg-p-700 px-1 py-1 text-white"
+              className="rounded-lg bg-p-700 px-1 py-1 text-white disabled:cursor-not-allowed disabled:opacity-35"
+              disabled={!phoneNumber}
             >
               Receive Code
             </button>
           )}
         </div>
+        <BtLight nextLevel={nextLevel} />
       </div>
+      <ToastContainer />
     </div>
   );
 }
