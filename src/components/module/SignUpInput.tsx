@@ -1,8 +1,10 @@
 "use client";
 
 import { IUserInfo } from "@/types/types";
-import { useState } from "react";
-import { Flip, toast, ToastContainer } from "react-toastify";
+import axios from "axios";
+import { error } from "console";
+import { useEffect, useState } from "react";
+import { Bounce, Flip, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "react-toastify/dist/ReactToastify.min.css";
 
@@ -15,6 +17,10 @@ function SignUpInput() {
     password: "",
   });
   const { name, userName, email, password, phoneNumber } = userInfo;
+  useEffect(() => {
+    const userPhone = localStorage.getItem("phoneNumber");
+    setUserInfo({ ...userInfo, phoneNumber: `${userPhone}` });
+  }, []);
 
   const regexInfo = {
     name: /^[A-Za-z\u0600-\u06FF]{4,}$/,
@@ -24,19 +30,30 @@ function SignUpInput() {
     //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
   };
 
-  const sendHandler = () => {
+  const sendHandler = async () => {
     if (
       !regexInfo.name.test(name) ||
       !regexInfo.email.test(email) ||
       !regexInfo.userName.test(userName) ||
       !regexInfo.password.test(password)
     ) {
-      toast.error("Enter  correct info", {
-        position: "top-center",
-        transition: Flip,
+      toast("Please enter correct information", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
       });
       return;
     }
+    await axios
+      .post("/api/auth/sign-up", { userInfo })
+      .then((res) => console.log(res))
+      .catch((error) => console.log(error));
   };
 
   const changeHandler = (e: any) => {
@@ -48,16 +65,17 @@ function SignUpInput() {
       {(Object.keys(userInfo) as (keyof IUserInfo)[]).map((key) => (
         <input
           key={key}
-          className={`rounded-xl border-2 border-dotted px-2 py-1 text-center text-p-950 placeholder:text-center placeholder:text-p-950 placeholder:opacity-40 focus:outline-none ${(key === "email" && regexInfo.email.test(userInfo[key as keyof IUserInfo])) || (key === "name" && regexInfo.name.test(userInfo[key as keyof IUserInfo])) || (key === "userName" && regexInfo.userName.test(userInfo[key as keyof IUserInfo])) || (key === "password" && regexInfo.password.test(userInfo[key as keyof IUserInfo])) ? "border-green-500" : "border-p-700"} `}
+          className={`rounded-xl border-2 border-dotted px-2 py-1 text-center text-p-950 placeholder:text-center placeholder:text-p-950 placeholder:opacity-40 read-only:opacity-65 focus:outline-none ${(key === "email" && regexInfo.email.test(userInfo[key as keyof IUserInfo])) || (key === "name" && regexInfo.name.test(userInfo[key as keyof IUserInfo])) || (key === "userName" && regexInfo.userName.test(userInfo[key as keyof IUserInfo])) || (key === "password" && regexInfo.password.test(userInfo[key as keyof IUserInfo])) ? "border-green-500" : "border-p-700"} `}
           value={userInfo[key as keyof IUserInfo]}
           name={key}
+          readOnly={key === "phoneNumber"}
           placeholder={key}
           onChange={(e) => changeHandler(e)}
         />
       ))}
       <button
         onClick={(e) => sendHandler()}
-        className="disabled:cursor-not-allowed disabled:opacity-35"
+        className="rounded-lg bg-p-700 px-2 py-1 font-medium text-white disabled:cursor-not-allowed disabled:opacity-35"
         disabled={!name || !userName || !email || !password}
       >
         send

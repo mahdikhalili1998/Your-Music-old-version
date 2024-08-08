@@ -2,6 +2,7 @@ export interface IUserInfo {
   name: string;
   userName: string;
   email: string;
-  phoneNumber: string;
+  readonly phoneNumber: string;
   password: string;
 }
+

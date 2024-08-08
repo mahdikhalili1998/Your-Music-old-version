@@ -59,6 +59,7 @@ function OtpPage() {
 
   const otpHandler = () => {
     if (otpCode === userCode) {
+      localStorage.setItem("phoneNumber", phoneNumber);
       router.push("/sign-up");
     }
   };
