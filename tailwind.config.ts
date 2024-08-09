@@ -14,6 +14,8 @@ const config: Config = {
       },
       colors: {
         "p-200": "#e9d5ff",
+        "p-300": "#d8b4fe",
+        "p-400": "#a78bfa",
         "p-500": "#a855f7",
         "p-700": "#7e22ce",
         "p-950": "#3b0764",
