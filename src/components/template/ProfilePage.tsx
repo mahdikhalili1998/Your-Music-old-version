@@ -30,9 +30,12 @@ function ProfilePage() {
           </div>
           <div className="flex flex-col items-start gap-2">
             <p className="text-p-950">_ Have an account ?</p>
-            <button className="py-1tracking-wider rounded-lg bg-p-700 px-2 tracking-[2px] text-white">
+            <Link
+              href="/sign-in"
+              className="py-1tracking-wider rounded-lg bg-p-700 px-2 tracking-[2px] text-white"
+            >
               Sign In
-            </button>
+            </Link>
           </div>
         </div>
       </div>

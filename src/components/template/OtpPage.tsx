@@ -7,6 +7,7 @@ import { Flip, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "react-toastify/dist/ReactToastify.min.css";
 import axios from "axios";
+import Loader from "../module/Loader";
 
 function OtpPage() {
   const [phoneNumber, setPhoneNumber] = useState<string>("");
@@ -109,20 +110,29 @@ function OtpPage() {
             className="rounded-lg border-2 border-p-700 px-2 py-1 text-center placeholder:text-center focus:outline-p-700"
           />
           {nextLevel ? (
-            <div className="flex items-center justify-center gap-4">
-              {" "}
-              <button
-                onClick={(e) => otpHandler()}
-                className="rounded-lg bg-p-700 px-2 py-1 text-white"
-              >
-                Send
-              </button>
-              <button
-                onClick={(e) => editHandler()}
-                className="rounded-lg bg-p-700 px-2 py-1 text-white"
-              >
-                Edit number
-              </button>
+            loading ? (
+              <div className="mx-auto w-max">
+                <Loader />
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-4">
+                <button
+                  onClick={(e) => otpHandler()}
+                  className="rounded-lg bg-p-700 px-2 py-1 text-white"
+                >
+                  Send
+                </button>
+                <button
+                  onClick={(e) => editHandler()}
+                  className="rounded-lg bg-p-700 px-2 py-1 text-white"
+                >
+                  Edit number
+                </button>
+              </div>
+            )
+          ) : loading ? (
+            <div className="mx-auto w-max">
+              <Loader />
             </div>
           ) : (
             <button

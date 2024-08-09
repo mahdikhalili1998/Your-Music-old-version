@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { Bounce, Flip, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "react-toastify/dist/ReactToastify.min.css";
+import Loader from "./Loader";
+import { useRouter } from "next/navigation";
 
 function SignUpInput() {
   const [userInfo, setUserInfo] = useState<IUserInfo>({
@@ -14,8 +16,11 @@ function SignUpInput() {
     userName: "",
     email: "",
     phoneNumber: "",
+    role: "user",
     password: "",
   });
+  const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
   const { name, userName, email, password, phoneNumber } = userInfo;
   useEffect(() => {
     const userPhone = localStorage.getItem("phoneNumber");
@@ -50,10 +55,28 @@ function SignUpInput() {
       });
       return;
     }
+    setLoading(true);
     await axios
       .post("/api/auth/sign-up", { userInfo })
-      .then((res) => console.log(res))
+      .then((res) => {
+        console.log(res);
+        toast.success(res.data.message, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+        if (res.status === 200) {
+          router.push("/");
+        }
+      })
       .catch((error) => console.log(error));
+    setLoading(false);
   };
 
   const changeHandler = (e: any) => {
@@ -65,7 +88,7 @@ function SignUpInput() {
       {(Object.keys(userInfo) as (keyof IUserInfo)[]).map((key) => (
         <input
           key={key}
-          className={`rounded-xl border-2 border-dotted px-2 py-1 text-center text-p-950 placeholder:text-center placeholder:text-p-950 placeholder:opacity-40 read-only:opacity-65 focus:outline-none ${(key === "email" && regexInfo.email.test(userInfo[key as keyof IUserInfo])) || (key === "name" && regexInfo.name.test(userInfo[key as keyof IUserInfo])) || (key === "userName" && regexInfo.userName.test(userInfo[key as keyof IUserInfo])) || (key === "password" && regexInfo.password.test(userInfo[key as keyof IUserInfo])) ? "border-green-500" : "border-p-700"} `}
+          className={`rounded-xl border-2 border-dotted px-2 py-1 text-center text-p-950 placeholder:text-center placeholder:text-p-950 placeholder:opacity-40 read-only:opacity-65 focus:outline-none ${(key === "email" && regexInfo.email.test(userInfo[key as keyof IUserInfo])) || (key === "name" && regexInfo.name.test(userInfo[key as keyof IUserInfo])) || (key === "userName" && regexInfo.userName.test(userInfo[key as keyof IUserInfo])) || (key === "password" && regexInfo.password.test(userInfo[key as keyof IUserInfo])) ? "border-green-500" : "border-p-700"} ${key === "role" ? "hidden" : null}`}
           value={userInfo[key as keyof IUserInfo]}
           name={key}
           readOnly={key === "phoneNumber"}
@@ -73,13 +96,20 @@ function SignUpInput() {
           onChange={(e) => changeHandler(e)}
         />
       ))}
-      <button
-        onClick={(e) => sendHandler()}
-        className="rounded-lg bg-p-700 px-2 py-1 font-medium text-white disabled:cursor-not-allowed disabled:opacity-35"
-        disabled={!name || !userName || !email || !password}
-      >
-        send
-      </button>
+      {loading ? (
+        <div className="mx-auto w-max">
+          <Loader />
+        </div>
+      ) : (
+        <button
+          onClick={(e) => sendHandler()}
+          className="rounded-lg bg-p-700 px-2 py-1 font-medium text-white disabled:cursor-not-allowed disabled:opacity-35"
+          disabled={!name || !userName || !email || !password}
+        >
+          send
+        </button>
+      )}
+
       <ToastContainer />
     </div>
   );
