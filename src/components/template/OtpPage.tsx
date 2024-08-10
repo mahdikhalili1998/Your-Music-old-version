@@ -3,11 +3,12 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { use, useState } from "react";
 import BtLight from "../module/BtLight";
-import { Flip, toast, ToastContainer } from "react-toastify";
+import { Bounce, Flip, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "react-toastify/dist/ReactToastify.min.css";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Loader from "../module/Loader";
+import { IAxios } from "@/types/axios";
 
 function OtpPage() {
   const [phoneNumber, setPhoneNumber] = useState<string>("");
@@ -31,38 +32,62 @@ function OtpPage() {
       });
       return;
     }
-    if (phoneRegex.test(phoneNumber)) {
-      setNextLevel(true);
-    }
 
     setLoading(true);
 
     await axios
-      .post("api/proxy", num, { headers })
+      .post("/api/auth/exsitedPhoneNumber", { phoneNumber } as IAxios)
       .then((res) => {
-        if (res) {
-          setNextLevel(true);
-          setOtpCode(res?.data.code);
+        if (res.status === 200) {
+          if (phoneRegex.test(phoneNumber)) {
+            setNextLevel(true);
+          }
+          axios
+            .post("api/proxy", num, { headers })
+            .then((res) => {
+              if (res) {
+                setNextLevel(true);
+                setOtpCode(res?.data.code);
+              }
+            })
+            .catch((error) => {
+              if (error) {
+                toast.error("Server Error , try again", {
+                  position: "top-center",
+                  transition: Flip,
+                });
+                return;
+              }
+            });
+          setLoading(false);
         }
       })
       .catch((error) => {
-        if (error) {
-          toast.error("Server Error , try again", {
+        if (error.response.status === 409) {
+          setLoading(false);
+          toast.error(error.response.data.message, {
             position: "top-center",
-            transition: Flip,
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
           });
           return;
         }
       });
-
-    setLoading(false);
   };
 
   const otpHandler = () => {
+    setLoading(true);
     if (otpCode === userCode) {
       localStorage.setItem("phoneNumber", phoneNumber);
       router.push("/sign-up");
     }
+    setLoading(false);
   };
 
   const editHandler = () => {

@@ -59,7 +59,6 @@ function SignUpInput() {
     await axios
       .post("/api/auth/sign-up", { userInfo })
       .then((res) => {
-        console.log(res);
         toast.success(res.data.message, {
           position: "top-center",
           autoClose: 5000,
@@ -72,10 +71,23 @@ function SignUpInput() {
           transition: Bounce,
         });
         if (res.status === 200) {
-          router.push("/");
+          router.push("/sign-in");
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        toast.error(error.response.data.message, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+        return;
+      });
     setLoading(false);
   };
 
