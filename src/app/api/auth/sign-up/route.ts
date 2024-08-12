@@ -21,8 +21,23 @@ export async function POST(req: NextRequest) {
 
     const hashPass = await hashPassword(password);
 
-    const exsitedUser = await userInfo.findOne({ email });
-    if (exsitedUser) {
+    const exsitedEmail = await userInfo.findOne({ email });
+    const exsitedUserName = await userInfo.findOne({ userName });
+
+    if (exsitedUserName && exsitedEmail) {
+      return NextResponse.json(
+        { message: MESSSGE.EXSITED_USER.replace("email", "userName & email") },
+        { status: STATUS.EXSITED_USER },
+      );
+    }
+
+    if (exsitedUserName) {
+      return NextResponse.json(
+        { message: MESSSGE.EXISTED_USER_NAME },
+        { status: STATUS.EXSITED_USER },
+      );
+    }
+    if (exsitedEmail) {
       return NextResponse.json(
         { message: MESSSGE.EXSITED_USER },
         { status: STATUS.EXSITED_USER },
@@ -48,4 +63,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-

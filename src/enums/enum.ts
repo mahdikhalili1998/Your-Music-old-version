@@ -2,8 +2,10 @@ export enum MESSSGE {
   SERVER_ERROR = "server error , try again later",
   WELCOME = "Welcome {name} 🖐️ ",
   INCORRECT_INFO = "Please inser correct Info",
-  EXSITED_USER = "There is an account with this {email}",
+  EXSITED_USER = "There is an account with this email",
   SUCCSESS = "succsess",
+  EXISTED_USER_NAME = "This user name already taken",
+
 }
 
 export enum STATUS {

@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     if (existedPhoneNumber) {
       return NextResponse.json(
         {
-          message: MESSSGE.EXSITED_USER.replace("{email}", "Phone Number"),
+          message: MESSSGE.EXSITED_USER.replace("email", "Phone Number"),
         },
         { status: STATUS.EXSITED_USER },
       );

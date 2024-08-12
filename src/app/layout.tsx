@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={"mx-auto max-w-[1300px] font-Roboto"}>
+      <body className={"mx-auto max-w-[1600px] font-Roboto"}>
         <Layout>{children}</Layout>
       </body>
     </html>

@@ -11,23 +11,22 @@ import Link from "next/link";
 
 function Layout({ children }: any) {
   const [open, setOpen] = useState<boolean>(false);
+
   return (
-    <div className="relative transition-[transform] duration-700">
-      <Header
-        open={open}
-        setOpen={setOpen}
-        header={function (value: React.SetStateAction<boolean>): void {
-          throw new Error("Function not implemented.");
-        }}
-      />
+    <div className="relative overflow-x-hidden">
+      <Header open={open} setOpen={setOpen} header={() => {}} />
       <div className={`my-[3rem]`}>
-        <div className={`${!open ? null : "opacity-10"}`}> {children}</div>
         <div
-          className={`space-y-8bg-gradient-to-r absolute top-0 h-max w-full bg-gradient-to-r from-p-500 to-p-200 py-[3rem] opacity-90 transition-[transform] duration-700 ${open ? "translate-x-0" : "translate-x-full"}`}
+          className={`${!open ? null : "opacity-30"} transition-opacity duration-300`}
+        >
+          {children}
+        </div>
+        <div
+          className={`fixed left-0 top-0 h-max w-full bg-gradient-to-r from-p-500 to-p-200 pb-[3rem] opacity-90 transition-transform duration-700 ${open ? "translate-x-0" : "translate-x-full"} ${open ? "visible" : "invisible"}`}
         >
           <span
             className="mr-1 flex justify-end"
-            onClick={(e) => setOpen(false)}
+            onClick={() => setOpen(false)}
           >
             <IoMdCloseCircle className={`mt-3 text-2xl text-p-950`} />
           </span>
@@ -36,14 +35,14 @@ function Layout({ children }: any) {
               <Link
                 className="custom-divider flex items-center gap-2 px-3 py-2 text-p-950"
                 href="profile"
-                onClick={(e) => setOpen(false)}
+                onClick={() => setOpen(false)}
               >
                 <MdAccountCircle className="text-3xl" /> Profile
               </Link>
               <Link
                 className="custom-divider flex items-center gap-2 px-3 py-2 text-p-950"
                 href=""
-                onClick={(e) => setOpen(false)}
+                onClick={() => setOpen(false)}
               >
                 <IoMdDownload className="text-3xl" />
                 Download
@@ -51,15 +50,15 @@ function Layout({ children }: any) {
               <Link
                 className="custom-divider flex items-center gap-2 px-3 py-2 text-p-950"
                 href=""
-                onClick={(e) => setOpen(false)}
+                onClick={() => setOpen(false)}
               >
                 <IoMdSettings className="text-3xl" />
-                Setting
+                Settings
               </Link>
               <Link
                 className="custom-divider flex items-center gap-2 px-3 py-2 text-p-950"
                 href=""
-                onClick={(e) => setOpen(false)}
+                onClick={() => setOpen(false)}
               >
                 <FaCircleInfo className="text-2xl" /> About us
               </Link>
