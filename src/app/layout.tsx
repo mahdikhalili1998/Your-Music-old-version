@@ -4,6 +4,7 @@ import "./globals.css";
 import "../font/font.css";
 import "../font/menu.css";
 import Layout from "@/components/layout/Layout";
+import NextAuthProvider from "@/providers/NextAuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +21,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={"mx-auto max-w-[1600px] font-Roboto"}>
-        <Layout>{children}</Layout>
+        <NextAuthProvider>
+          <Layout>{children}</Layout>
+        </NextAuthProvider>
       </body>
     </html>
   );

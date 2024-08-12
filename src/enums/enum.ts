@@ -5,7 +5,8 @@ export enum MESSSGE {
   EXSITED_USER = "There is an account with this email",
   SUCCSESS = "succsess",
   EXISTED_USER_NAME = "This user name already taken",
-
+  CREATE_ACCOUNT = "Please create account first",
+  INCORRECT_USERNAME_PASSWORD = "userName or password is incorrect",
 }
 
 export enum STATUS {

@@ -110,7 +110,7 @@ function SignUpInput() {
       ))}
       {loading ? (
         <div className="mx-auto w-max">
-          <Loader />
+          <Loader height={40} width={80} />
         </div>
       ) : (
         <button
